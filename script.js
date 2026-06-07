@@ -1,448 +1,398 @@
-// Fungsi untuk memulai musik
-function playMusic() {
-  const music = document.getElementById('background-music');
-  music.play();
-}
-window.addEventListener('DOMContentLoaded', function() {
-  playMusic();
+const birthdayPage = {
+  letter: [
+    "It's your day!!! HARI INI HARIMUUUUU!!! YEYYYY. Selamat ulang tahun yaa My Baby Sweety Pretty Cinnamon Apple Girl <3 ",
+    "Semoga panjang umur, bahagia selalu, mimpinya tercapai dan harapannya dikabulkann.",
+    "I'm sad that we can't celebrate your birthday together :( but it's okay since kita masih bisa call-an tiap hari yayy :>",
+    "Terakhir, semoga kamu suka dengan hadiah yang kubuat ini, masih ada beberapa kejutan lainnya yang aku selipkan di laman spesial ini. Happy Birthdayy"
+  ],
+  memories: [
+    {
+      title: "Momen random yang masih aku inget",
+      text: "Ada hal kecil yang mungkin kamu lupa, tapi entah kenapa masih nyangkut di kepalaku sampai sekarang."
+    },
+    {
+      title: "Hal dari kamu yang bikin aku senyum",
+      text: "Cara kamu cerita, cara kamu bereaksi, dan cara kamu jadi lucu tanpa sadar. Itu selalu punya tempat sendiri."
+    },
+    {
+      title: "Hari yang rasanya sederhana",
+      text: "Bukan karena tempatnya spesial, tapi karena waktu itu ada kamu di sana. Kadang sesimpel itu."
+    }
+  ],
+  puzzleWords: [
+    {
+      number: 1,
+      answer: "KAMU",
+      clue: "Orang yang jadi alasan halaman ini dibuat.",
+      row: 1,
+      col: 1,
+      direction: "across"
+    },
+    {
+      number: 2,
+      answer: "KENANGAN",
+      clue: "Hal-hal kecil yang masih aku simpan tentang kita.",
+      row: 1,
+      col: 1,
+      direction: "down"
+    },
+    {
+      number: 3,
+      answer: "RUMAH",
+      clue: "Rasa nyaman yang kadang muncul bukan karena tempat, tapi karena orangnya.",
+      row: 5,
+      col: 4,
+      direction: "across"
+    },
+    {
+      number: 4,
+      answer: "MANIS",
+      clue: "Kata yang cocok buat momen kecil yang susah dijelasin.",
+      row: 3,
+      col: 10,
+      direction: "down"
+    },
+    {
+      number: 5,
+      answer: "MONOKROM",
+      clue: "Lagu yang sudah disiapkan jadi musik latar halaman ini.",
+      row: 9,
+      col: 2,
+      direction: "across"
+    }
+  ]
+};
+
+const screens = Array.from(document.querySelectorAll(".screen"));
+const music = document.getElementById("background-music");
+const openingMainImage = document.getElementById("opening-main-image");
+const openingSubcopy = document.getElementById("opening-subcopy");
+const openingActions = document.getElementById("opening-actions");
+const acceptButton = document.getElementById("accept-button");
+const declineButton = document.getElementById("decline-button");
+const letterText = document.getElementById("letter-text");
+const letterProgress = document.getElementById("letter-progress");
+const nextLetterButton = document.getElementById("next-letter");
+const memoryGrid = document.getElementById("memory-grid");
+const crossword = document.getElementById("crossword");
+const acrossClues = document.getElementById("across-clues");
+const downClues = document.getElementById("down-clues");
+const puzzleNote = document.getElementById("puzzle-note");
+const openFinalButton = document.getElementById("open-final");
+const claimMessage = document.getElementById("claim-message");
+
+let letterIndex = 0;
+let puzzleSolved = false;
+let openingDeclined = false;
+let activeDirection = "across";
+const gridSize = 11;
+const cellMap = new Map();
+
+requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
+    document.body.classList.add("intro-ready");
+  });
 });
-document.body.addEventListener('click', playMusic, { once: true });
-const content = document.getElementById('content');
-const footer = document.getElementsByTagName('footer')[0];
-const timer = document.getElementById('timer');
 
-const second = 1000,
-  minute = second * 60,
-  hour = minute * 60,
-  day = hour * 24;
-let countDown = new Date('Oct 22, 2023 00:00:00').getTime(),
-  x = setInterval(function () {
-    let now = new Date().getTime(),
-      distance = countDown - now;
-    // document.getElementById('days').innerText = Math.floor(distance / (day)),
-    document.getElementById('hours').innerText = Math.floor(distance / (hour)),
-      document.getElementById('minutes').innerText = Math.floor((distance % (hour)) / (minute)),
-      document.getElementById('seconds').innerText = Math.floor((distance % (minute)) / second);
-
-    if (distance < 0) {
-
-      timer.classList.add('d-none');
-      confetti();
-      clearInterval(x);
-      _slideSatu();
-    }
-
-  }, second)
-
-const _slideSatu = function () {
-  const tap = document.getElementById('tap');
-  const slideSatu = document.getElementById('slideSatu');
-  slideSatu.classList.remove('d-none');
-  setTimeout(function () {
-    tap.classList.remove('d-none');
-    document.body.addEventListener('click', function () {
-      _slideDua();
-    })
-  }, 7000);
-};
-
-const _slideDua = function () {
-  const slideSatu = document.getElementById('slideSatu');
-  const tap = document.getElementById('tap');
-  const slideDua = document.getElementById('slideDua');
-
-  setTimeout(function () {
-    slideSatu.classList.replace('animate__slideInDown', 'animate__backOutDown');
-    tap.classList.add('d-none');
-    setTimeout(function () {
-      slideSatu.classList.add('d-none');
-    }, 1000);
-  }, 1000);
-
-  slideDua.classList.remove('d-none');
-  setTimeout(function () {
-    tap.classList.remove('d-none');
-    document.body.addEventListener('click', function () {
-      slideDua.classList.replace('animate__zoomInDown', 'animate__fadeOutLeft');
-      slideDua.classList.remove('animate__delay-2s', 'animate__slow');
-      tap.classList.add('d-none');
-      setTimeout(function () {
-        slideDua.remove();
-        _slideTiga();
-      }, 1000);
-    })
-  }, 40000);
-};
-
-const _slideTiga = function () {
-  const tap = document.getElementById('tap');
-  const slideTiga = document.getElementById('slideTiga');
-
-  slideTiga.classList.remove('d-none');
-  setTimeout(function () {
-    tap.classList.remove('d-none');
-    document.body.addEventListener('click', function () {
-      slideTiga.classList.remove('animate__delay-2s', 'animate__slow');
-      slideTiga.classList.replace('animate__fadeInRight', 'animate__fadeOut');
-      tap.remove();
-      setTimeout(function () {
-        slideTiga.remove();
-        _slideEmpat();
-      }, 1000);
-    })
-  }, 43000);
+function showScreen(id) {
+  screens.forEach((screen) => {
+    screen.classList.toggle("is-active", screen.id === id);
+  });
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function getRandomPosition(element) {
-  var x = document.body.offsetHeight - element.clientHeight;
-  var y = document.body.offsetWidth - element.clientWidth;
-  var randomX = Math.floor(Math.random() * 500);
-  var randomY = Math.floor(Math.random() * y);
-  return [randomX, randomY];
-};
-
-const _slideEmpat = function () {
-  const slideEmpat = document.getElementById('slideEmpat');
-  const btn = document.getElementsByTagName('button');
-  slideEmpat.classList.remove('d-none');
-
-  btn[0].addEventListener('click', function () {
-    var xy = getRandomPosition(slideEmpat);
-    slideEmpat.style.top = xy[0] + 'px';
-    // slideEmpat.style.left = xy[1] + 'px';
+function tryPlayMusic() {
+  if (!music) return;
+  music.volume = 0.34;
+  music.play().catch(() => {
+    // Browser biasanya menunggu interaksi user sebelum audio boleh mulai.
   });
+}
 
-  btn[1].addEventListener('click', function () {
-    slideEmpat.classList.replace('animate__fadeInDown', 'animate__bounceOut');
-    slideEmpat.classList.remove('animate__delay-2s');
-    setTimeout(function () {
-      slideEmpat.remove()
-      setTimeout(() => {
-        _slideLima();
-      }, 500);
-    }, 1000);
-  })
-};
+function renderLetter() {
+  letterText.textContent = birthdayPage.letter[letterIndex];
+  letterProgress.innerHTML = birthdayPage.letter
+    .map((_, index) => `<span class="letter-dot${index === letterIndex ? " is-active" : ""}"></span>`)
+    .join("");
+  nextLetterButton.textContent = letterIndex === birthdayPage.letter.length - 1 ? "Lihat kenangan" : "Lanjut";
+}
 
-const _slideLima = function () {
-  const slideLima = document.getElementById('slideLima');
-  slideLima.classList.remove('d-none');
-  const trims = document.getElementById('trims');
+function renderMemories() {
+  memoryGrid.innerHTML = birthdayPage.memories
+    .map((memory, index) => `
+      <article class="memory-card">
+        <span>${index + 1}</span>
+        <h3>${memory.title}</h3>
+        <p>${memory.text}</p>
+      </article>
+    `)
+    .join("");
+}
 
-  setTimeout(() => {
-    trims.classList.remove('d-none');
-  }, 1000);
+function cellKey(row, col) {
+  return `${row}-${col}`;
+}
 
-  slideLima.addEventListener('animationend', () => {
-    slideLima.classList.add('animate__delay-3s')
-    slideLima.classList.replace('animate__bounceIn', 'animate__fadeOut');
-    trims.classList.add('animate__animated', 'animate__fadeOut', 'animate__delay-3s');
-    setTimeout(() => {
-      trims.remove();
-      setTimeout(() => {
-        slideLima.remove();
-        _slideEnam();
-      }, 1000);
-    }, 6000);
+function buildCellMap() {
+  birthdayPage.puzzleWords.forEach((word) => {
+    [...word.answer].forEach((letter, index) => {
+      const row = word.direction === "down" ? word.row + index : word.row;
+      const col = word.direction === "across" ? word.col + index : word.col;
+      const key = cellKey(row, col);
+      const existing = cellMap.get(key) || { row, col, letter, numbers: [] };
+
+      existing.letter = letter;
+      if (index === 0) existing.numbers.push(word.number);
+      cellMap.set(key, existing);
+    });
   });
-};
+}
 
-const _slideEnam = function () {
-  const slideEnam = document.getElementById('slideEnam');
-  slideEnam.classList.remove('d-none');
-};
+function renderClues() {
+  const renderList = (direction) => birthdayPage.puzzleWords
+    .filter((word) => word.direction === direction)
+    .map((word) => `<li value="${word.number}">${word.clue}</li>`)
+    .join("");
 
+  acrossClues.innerHTML = renderList("across");
+  downClues.innerHTML = renderList("down");
+}
 
-new TypeIt("#teks1", {
-  strings: ["Hari ini, saya langitkan semua doa terbaik saya untuk kamu.", "Semoga hal-hal yang membuat kamu runtuh turut menjadi alasan kamu untuk tetap tumbuh.", "Semoga dunia senantiasa menjaga kamu dimanapun kamu berada.", "Semoga hari-hari kamu selalu diiringi cinta yang tak pernah ada batasnya." , "Semoga setiap langkahmu dimudahkan hingga tercapai apa yang kamu inginkan."],
-  startDelay: 4000,
-  speed: 75,
-  waitUntilVisible: true
-}).go();
+function renderCrossword() {
+  buildCellMap();
+  const cells = [];
 
-new TypeIt("#teks2", {
-  strings: ["Dengan ataupun tanpaku, semoga semesta selalu membahagiakan kamu bagimanapun caranya.", " ", "barakallah fi umrik, terima kasih sudah bertahan sampai sejauh ini.", " ", "- Wish all you the best"],
-  startDelay: 2000,
-  speed: 75,
-  waitUntilVisible: true
-}).go();
+  for (let row = 1; row <= gridSize; row += 1) {
+    for (let col = 1; col <= gridSize; col += 1) {
+      const cell = cellMap.get(cellKey(row, col));
 
-
-new TypeIt("#trims", {
-  strings: ["Terimakasih."],
-  startDelay: 2000,
-  speed: 150,
-  loop: false,
-  waitUntilVisible: true,
-}).go();
-
-
-
-'use strict';
-
-var onlyOnKonami = false;
-
-function confetti() {
-  // Globals
-  var $window = $(window),
-    random = Math.random,
-    cos = Math.cos,
-    sin = Math.sin,
-    PI = Math.PI,
-    PI2 = PI * 2,
-    timer = undefined,
-    frame = undefined,
-    confetti = [];
-
-  var runFor = 2000
-  var isRunning = true
-
-  setTimeout(() => {
-    isRunning = false
-  }, runFor);
-
-  // Settings
-  var konami = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65],
-    pointer = 0;
-
-  var particles = 150,
-    spread = 20,
-    sizeMin = 5,
-    sizeMax = 12 - sizeMin,
-    eccentricity = 10,
-    deviation = 100,
-    dxThetaMin = -.1,
-    dxThetaMax = -dxThetaMin - dxThetaMin,
-    dyMin = .13,
-    dyMax = .18,
-    dThetaMin = .4,
-    dThetaMax = .7 - dThetaMin;
-
-  var colorThemes = [
-    function () {
-      return color(200 * random() | 0, 200 * random() | 0, 200 * random() | 0);
-    },
-    function () {
-      var black = 200 * random() | 0;
-      return color(200, black, black);
-    },
-    function () {
-      var black = 200 * random() | 0;
-      return color(black, 200, black);
-    },
-    function () {
-      var black = 200 * random() | 0;
-      return color(black, black, 200);
-    },
-    function () {
-      return color(200, 100, 200 * random() | 0);
-    },
-    function () {
-      return color(200 * random() | 0, 200, 200);
-    },
-    function () {
-      var black = 256 * random() | 0;
-      return color(black, black, black);
-    },
-    function () {
-      return colorThemes[random() < .5 ? 1 : 2]();
-    },
-    function () {
-      return colorThemes[random() < .5 ? 3 : 5]();
-    },
-    function () {
-      return colorThemes[random() < .5 ? 2 : 4]();
-    }
-  ];
-
-  function color(r, g, b) {
-    return 'rgb(' + r + ',' + g + ',' + b + ')';
-  }
-
-  // Cosine interpolation
-  function interpolation(a, b, t) {
-    return (1 - cos(PI * t)) / 2 * (b - a) + a;
-  }
-
-  // Create a 1D Maximal Poisson Disc over [0, 1]
-  var radius = 1 / eccentricity,
-    radius2 = radius + radius;
-
-  function createPoisson() {
-    // domain is the set of points which are still available to pick from
-    // D = union{ [d_i, d_i+1] | i is even }
-    var domain = [radius, 1 - radius],
-      measure = 1 - radius2,
-      spline = [0, 1];
-    while (measure) {
-      var dart = measure * random(),
-        i, l, interval, a, b, c, d;
-
-      // Find where dart lies
-      for (i = 0, l = domain.length, measure = 0; i < l; i += 2) {
-        a = domain[i], b = domain[i + 1], interval = b - a;
-        if (dart < measure + interval) {
-          spline.push(dart += a - measure);
-          break;
-        }
-        measure += interval;
-      }
-      c = dart - radius, d = dart + radius;
-
-      for (i = domain.length - 1; i > 0; i -= 2) {
-        l = i - 1, a = domain[l], b = domain[i];
-        // c---d          c---d  Do nothing
-        //   c-----d  c-----d    Move interior
-        //   c--------------d    Delete interval
-        //         c--d          Split interval
-        //       a------b
-        if (a >= c && a < d)
-          if (b > d) domain[l] = d; // Move interior (Left case)
-          else domain.splice(l, 2); // Delete interval
-        else if (a < c && b > c)
-          if (b <= d) domain[i] = c; // Move interior (Right case)
-          else domain.splice(i, 0, c, d); // Split interval
+      if (!cell) {
+        cells.push('<div class="cell is-empty"></div>');
+        continue;
       }
 
-      for (i = 0, l = domain.length, measure = 0; i < l; i += 2)
-        measure += domain[i + 1] - domain[i];
-    }
-
-    return spline.sort();
-  }
-
-  var container = document.createElement('div');
-  container.style.position = 'fixed';
-  container.style.top = '0';
-  container.style.left = '0';
-  container.style.width = '100%';
-  container.style.height = '0';
-  container.style.overflow = 'visible';
-  container.style.zIndex = '9999';
-
-  // Confetto constructor
-  function Confetto(theme) {
-    this.frame = 0;
-    this.outer = document.createElement('div');
-    this.inner = document.createElement('div');
-    this.outer.appendChild(this.inner);
-
-    var outerStyle = this.outer.style,
-      innerStyle = this.inner.style;
-    outerStyle.position = 'absolute';
-    outerStyle.width = (sizeMin + sizeMax * random()) + 'px';
-    outerStyle.height = (sizeMin + sizeMax * random()) + 'px';
-    innerStyle.width = '100%';
-    innerStyle.height = '100%';
-    innerStyle.backgroundColor = theme();
-
-    outerStyle.perspective = '50px';
-    outerStyle.transform = 'rotate(' + (360 * random()) + 'deg)';
-    this.axis = 'rotate3D(' +
-      cos(360 * random()) + ',' +
-      cos(360 * random()) + ',0,';
-    this.theta = 360 * random();
-    this.dTheta = dThetaMin + dThetaMax * random();
-    innerStyle.transform = this.axis + this.theta + 'deg)';
-
-    this.x = $window.width() * random();
-    this.y = -deviation;
-    this.dx = sin(dxThetaMin + dxThetaMax * random());
-    this.dy = dyMin + dyMax * random();
-    outerStyle.left = this.x + 'px';
-    outerStyle.top = this.y + 'px';
-
-    // Create the periodic spline
-    this.splineX = createPoisson();
-    this.splineY = [];
-    for (var i = 1, l = this.splineX.length - 1; i < l; ++i)
-      this.splineY[i] = deviation * random();
-    this.splineY[0] = this.splineY[l] = deviation * random();
-
-    this.update = function (height, delta) {
-      this.frame += delta;
-      this.x += this.dx * delta;
-      this.y += this.dy * delta;
-      this.theta += this.dTheta * delta;
-
-      // Compute spline and convert to polar
-      var phi = this.frame % 7777 / 7777,
-        i = 0,
-        j = 1;
-      while (phi >= this.splineX[j]) i = j++;
-      var rho = interpolation(
-        this.splineY[i],
-        this.splineY[j],
-        (phi - this.splineX[i]) / (this.splineX[j] - this.splineX[i])
-      );
-      phi *= PI2;
-
-      outerStyle.left = this.x + rho * cos(phi) + 'px';
-      outerStyle.top = this.y + rho * sin(phi) + 'px';
-      innerStyle.transform = this.axis + this.theta + 'deg)';
-      return this.y > height + deviation;
-    };
-  }
-
-
-  function poof() {
-    if (!frame) {
-      // Append the container
-      document.body.appendChild(container);
-
-      // Add confetti
-
-      var theme = colorThemes[onlyOnKonami ? colorThemes.length * random() | 0 : 0],
-        count = 0;
-
-      (function addConfetto() {
-
-        if (onlyOnKonami && ++count > particles)
-          return timer = undefined;
-
-        if (isRunning) {
-          var confetto = new Confetto(theme);
-          confetti.push(confetto);
-
-          container.appendChild(confetto.outer);
-          timer = setTimeout(addConfetto, spread * random());
-        }
-      })(0);
-
-
-      // Start the loop
-      var prev = undefined;
-      requestAnimationFrame(function loop(timestamp) {
-        var delta = prev ? timestamp - prev : 0;
-        prev = timestamp;
-        var height = $window.height();
-
-        for (var i = confetti.length - 1; i >= 0; --i) {
-          if (confetti[i].update(height, delta)) {
-            container.removeChild(confetti[i].outer);
-            confetti.splice(i, 1);
-          }
-        }
-
-        if (timer || confetti.length)
-          return frame = requestAnimationFrame(loop);
-
-        // Cleanup
-        document.body.removeChild(container);
-        frame = undefined;
-      });
+      const number = cell.numbers.length ? `<span class="cell-number">${cell.numbers.join("/")}</span>` : "";
+      cells.push(`
+        <label class="cell">
+          ${number}
+          <input type="text" maxlength="1" autocomplete="off" inputmode="text" aria-label="Baris ${row}, kolom ${col}" data-answer="${cell.letter}" data-row="${row}" data-col="${col}">
+        </label>
+      `);
     }
   }
 
-  $window.keydown(function (event) {
-    pointer = konami[pointer] === event.which ?
-      pointer + 1 :
-      +(event.which === konami[0]);
-    if (pointer === konami.length) {
-      pointer = 0;
-      poof();
-    }
+  crossword.innerHTML = cells.join("");
+  renderClues();
+}
+
+function getInputAt(row, col) {
+  return crossword.querySelector(`input[data-row="${row}"][data-col="${col}"]`);
+}
+
+function getCoordinates(input) {
+  return {
+    row: Number(input.dataset.row),
+    col: Number(input.dataset.col)
+  };
+}
+
+function getNeighbor(input, direction, step) {
+  const { row, col } = getCoordinates(input);
+  const nextRow = direction === "down" ? row + step : row;
+  const nextCol = direction === "across" ? col + step : col;
+  return getInputAt(nextRow, nextCol);
+}
+
+function hasNeighbor(input, direction) {
+  return Boolean(getNeighbor(input, direction, -1) || getNeighbor(input, direction, 1));
+}
+
+function syncDirectionFromInput(input) {
+  const hasAcross = hasNeighbor(input, "across");
+  const hasDown = hasNeighbor(input, "down");
+
+  if (hasAcross && !hasDown) {
+    activeDirection = "across";
+    return;
+  }
+
+  if (hasDown && !hasAcross) {
+    activeDirection = "down";
+  }
+}
+
+function moveToNextInput(currentInput) {
+  const nextInput = getNeighbor(currentInput, activeDirection, 1);
+  if (nextInput) nextInput.focus();
+}
+
+function checkPuzzle() {
+  const inputs = Array.from(crossword.querySelectorAll("input"));
+  const allCorrect = inputs.every((input) => input.value.toUpperCase() === input.dataset.answer);
+
+  inputs.forEach((input) => {
+    const hasValue = input.value.trim().length > 0;
+    const isCorrect = input.value.toUpperCase() === input.dataset.answer;
+    input.classList.toggle("is-filled", hasValue && isCorrect);
+    input.classList.toggle("is-wrong", hasValue && !isCorrect);
   });
 
-  if (!onlyOnKonami) poof();
-};
+  if (allCorrect && !puzzleSolved) {
+    puzzleSolved = true;
+    puzzleNote.textContent = "Nah, karena kamu berhasil nyelesain ini, berarti kamu layak buka hadiah terakhir.";
+    openFinalButton.classList.remove("is-hidden");
+    burstConfetti();
+  }
+}
+
+function burstConfetti() {
+  const colors = ["#d65f7c", "#f0836d", "#7aa58d", "#89a9d8", "#d9a441"];
+  const confettiLayer = document.createElement("div");
+
+  confettiLayer.style.position = "fixed";
+  confettiLayer.style.inset = "0";
+  confettiLayer.style.pointerEvents = "none";
+  confettiLayer.style.zIndex = "20";
+  document.body.appendChild(confettiLayer);
+
+  for (let index = 0; index < 90; index += 1) {
+    const piece = document.createElement("span");
+    const size = 6 + Math.random() * 8;
+    const startX = 10 + Math.random() * 80;
+    const drift = -90 + Math.random() * 180;
+
+    piece.style.position = "absolute";
+    piece.style.left = `${startX}%`;
+    piece.style.top = "-20px";
+    piece.style.width = `${size}px`;
+    piece.style.height = `${size * 1.4}px`;
+    piece.style.borderRadius = "2px";
+    piece.style.background = colors[index % colors.length];
+    piece.style.transform = `rotate(${Math.random() * 180}deg)`;
+    piece.style.transition = `transform ${1600 + Math.random() * 800}ms ease-out, top ${1600 + Math.random() * 800}ms ease-in, opacity 500ms ease`;
+    confettiLayer.appendChild(piece);
+
+    requestAnimationFrame(() => {
+      piece.style.top = "105vh";
+      piece.style.opacity = "0.4";
+      piece.style.transform = `translateX(${drift}px) rotate(${540 + Math.random() * 360}deg)`;
+    });
+  }
+
+  window.setTimeout(() => confettiLayer.remove(), 2600);
+}
+
+function setOpeningState(isDeclined) {
+  openingDeclined = isDeclined;
+  openingMainImage.src = isDeclined ? "./img/whyno.gif" : "./img/doyouacceptthisgift.png";
+  openingMainImage.alt = isDeclined ? "Why no" : "Will you accept this gift";
+  openingSubcopy.classList.toggle("is-hidden", !isDeclined);
+  declineButton.classList.toggle("is-hidden", isDeclined);
+  openingActions.classList.toggle("is-single", isDeclined);
+}
+
+acceptButton.addEventListener("click", () => {
+  tryPlayMusic();
+  setOpeningState(false);
+  renderLetter();
+  showScreen("letter");
+});
+
+declineButton.addEventListener("click", () => {
+  tryPlayMusic();
+  setOpeningState(true);
+});
+
+nextLetterButton.addEventListener("click", () => {
+  if (letterIndex < birthdayPage.letter.length - 1) {
+    letterIndex += 1;
+    renderLetter();
+    return;
+  }
+
+  renderMemories();
+  showScreen("timeline");
+});
+
+document.getElementById("timeline-next").addEventListener("click", () => {
+  showScreen("puzzle");
+});
+
+document.querySelectorAll(".nav-back").forEach((button) => {
+  button.addEventListener("click", () => {
+    const targetScreen = button.dataset.backTo;
+    if (targetScreen === "opening") setOpeningState(openingDeclined);
+    if (targetScreen) showScreen(targetScreen);
+  });
+});
+
+crossword.addEventListener("input", (event) => {
+  if (!event.target.matches("input")) return;
+  syncDirectionFromInput(event.target);
+  event.target.value = event.target.value.replace(/[^a-zA-Z]/g, "").slice(0, 1).toUpperCase();
+  if (event.target.value) moveToNextInput(event.target);
+  checkPuzzle();
+});
+
+crossword.addEventListener("keydown", (event) => {
+  if (!event.target.matches("input")) return;
+
+  if (event.key === "ArrowRight") {
+    activeDirection = "across";
+    event.preventDefault();
+    const nextInput = getNeighbor(event.target, "across", 1);
+    if (nextInput) nextInput.focus();
+    return;
+  }
+
+  if (event.key === "ArrowLeft") {
+    activeDirection = "across";
+    event.preventDefault();
+    const previousInput = getNeighbor(event.target, "across", -1);
+    if (previousInput) previousInput.focus();
+    return;
+  }
+
+  if (event.key === "ArrowDown") {
+    activeDirection = "down";
+    event.preventDefault();
+    const nextInput = getNeighbor(event.target, "down", 1);
+    if (nextInput) nextInput.focus();
+    return;
+  }
+
+  if (event.key === "ArrowUp") {
+    activeDirection = "down";
+    event.preventDefault();
+    const previousInput = getNeighbor(event.target, "down", -1);
+    if (previousInput) previousInput.focus();
+    return;
+  }
+
+  if (event.key !== "Backspace" || event.target.value) return;
+  event.preventDefault();
+  const previousInput = getNeighbor(event.target, activeDirection, -1);
+  if (previousInput) previousInput.focus();
+});
+
+crossword.addEventListener("focusin", (event) => {
+  if (!event.target.matches("input")) return;
+  syncDirectionFromInput(event.target);
+});
+
+crossword.addEventListener("click", (event) => {
+  if (!event.target.matches("input")) return;
+  syncDirectionFromInput(event.target);
+});
+
+openFinalButton.addEventListener("click", () => {
+  showScreen("final");
+});
+
+document.getElementById("claim-button").addEventListener("click", () => {
+  claimMessage.textContent = "Hadiah berhasil diklaim. Sekarang tinggal bilang mau makan apa dan kapan.";
+  burstConfetti();
+});
+
+renderCrossword();
+setOpeningState(false);

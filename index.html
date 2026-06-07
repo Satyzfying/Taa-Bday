@@ -1,92 +1,105 @@
 <!doctype html>
-<html lang="en">
+<html lang="id">
 
 <head>
-  <!-- Required meta tags -->
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css" />
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5c9d6">
+  <title>Untuk Kamu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&display=swap" rel="stylesheet">
   <link rel="shortcut icon" type="image/x-icon" href="./img/hbd.png">
-  <title>Happy Birthday!</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <audio id="background-music" src="./music/monokrom.mp3" preload="auto">
-  </audio>
+  <audio id="background-music" src="./music/backsound.mp3" loop preload="auto"></audio>
 
-  <div class="bg" id="content">
-
-    <div class="container" id="timer">
-      <h5>Countdown to <x id='name'></x> birthday :</h5>
-      <ul>
-        <li><span id="days"></span>days</li>
-        <li><span id="hours"></span>Hours</li>
-        <li><span id="minutes"></span>Minutes</li>
-        <li><span id="seconds"></span>Seconds</li>
-      </ul>
-    </div>
-
-    <div id="slideSatu" class="animate__animated animate__slideInDown animate__slow d-none">
-      <img src="./img/hbd1.png" class="img">
-    </div>
-
-    <div id="slideDua"
-      class="slides d-none paper animate__zoomInDown animate__animated animate__delay-2s animate__slow">
-      <div class="paper-content">
-        <p id="teks1" class="teks"></p>
-      </div>
-    </div>
-
-    <div id="slideTiga" class="slides d-none paper animate__fadeInRight animate__animated">
-      <div class="paper-content">
-        <p id="teks2" class="teks"></p>
-      </div>
-    </div>
-
-    <div class="kotak d-none slides animate__animated animate__fadeInDown animate__delay-2s" id="slideEmpat">
-      <div class="row">
-        <div class="col-sm mt-1">
-          <h5>Kamu suka nggak?</h5>
+  <main class="app-shell">
+    <section class="screen screen-opening is-active" id="opening" aria-labelledby="opening-title">
+      <div class="opening-card">
+        <img class="opening-main-image" id="opening-main-image" src="./img/doyouacceptthisgift.png" alt="Will you accept this gift">
+        <h1 id="opening-title">Will You Accept This Gift?</h1>
+        <p class="opening-subcopy is-hidden" id="opening-subcopy">Why?? Please, i made this just for you :(</p>
+        <div class="opening-actions" id="opening-actions">
+          <button class="primary-action" id="accept-button" type="button">Yes</button>
+          <button class="secondary-action" id="decline-button" type="button">No</button>
         </div>
       </div>
-      <div class="row mt-2">
-        <div class="col-4 offset-2">
-          <button id="gak" class="btn btn-outline-danger"> Gak! </button>
-        </div>
-        <div class="col-4">
-          <button id="suka" class="btn btn-outline-info"> Suka!! </button>
-        </div>
+    </section>
+
+    <section class="screen" id="letter" aria-labelledby="letter-title">
+      <div class="section-head">
+        <p class="eyebrow">Sepatah kata</p>
+        <h2 id="letter-title">Baca pelan-pelan ya.</h2>
       </div>
-    </div>
+      <article class="letter-card">
+        <p id="letter-text"></p>
+        <div class="letter-progress" id="letter-progress" aria-hidden="true"></div>
+      </article>
+      <div class="action-row">
+        <button class="secondary-action nav-back" data-back-to="opening" type="button">Back</button>
+        <button class="primary-action" id="next-letter" type="button">Lanjut</button>
+      </div>
+    </section>
 
-    <div id="slideLima" class="d-none animate__bounceIn animate__animated animate__slow">
-      <i class="fas fa-heart fa-5x text-danger"></i>
-    </div>
-    <p id="trims" class="text-muted d-none mt-2"></p>
+    <section class="screen" id="timeline" aria-labelledby="timeline-title">
+      <div class="section-head">
+        <p class="eyebrow">Hal kecil yang aku inget</p>
+        <h2 id="timeline-title">Beberapa momen tentang kita.</h2>
+      </div>
+      <div class="memory-grid" id="memory-grid"></div>
+      <div class="action-row">
+        <button class="secondary-action nav-back" data-back-to="letter" type="button">Back</button>
+        <button class="primary-action" id="timeline-next" type="button">Ke teka-teki</button>
+      </div>
+    </section>
 
-    <p id="tap" class="d-none animate__animated animate__pulse text-muted animate__slow animate__repeat-3">Ketuk untuk
-      melanjutkan</p>
-    <!-- Footer -->
-    <footer class="page-footer font-small blue fixed-bottom">
-  <!-- Optional JavaScript -->
-  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous">
-  </script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
-  </script>
-  <script src="https://kit.fontawesome.com/61e5120832.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/typeit@7.0.4/dist/typeit.min.js"></script>
-  <script src="https://momentjs.com/downloads/moment.js"></script>
-  <script src="https://momentjs.com/downloads/moment-with-locales.js"></script>
-  <script src="https://momentjs.com/downloads/moment-timezone-with-data.js"></script>
+    <section class="screen" id="puzzle" aria-labelledby="puzzle-title">
+      <div class="section-head">
+        <p class="eyebrow">Teka-teki kecil</p>
+        <h2 id="puzzle-title">Isi jawaban yang paling kita banget.</h2>
+      </div>
+      <div class="puzzle-layout">
+        <div class="crossword-wrap">
+          <div class="crossword" id="crossword" aria-label="Teka-teki silang"></div>
+        </div>
+        <aside class="clues-panel">
+          <div>
+            <h3>Mendatar</h3>
+            <ol id="across-clues"></ol>
+          </div>
+          <div>
+            <h3>Menurun</h3>
+            <ol id="down-clues"></ol>
+          </div>
+          <p class="puzzle-note" id="puzzle-note">Isi semua kotak, lalu hadiah terakhir kebuka.</p>
+        </aside>
+      </div>
+      <div class="action-row">
+        <button class="secondary-action nav-back" data-back-to="timeline" type="button">Back</button>
+        <button class="primary-action is-hidden" id="open-final" type="button">Buka hadiah terakhir</button>
+      </div>
+    </section>
+
+    <section class="screen screen-final" id="final" aria-labelledby="final-title">
+      <div class="final-panel">
+        <p class="eyebrow">Hadiah terakhir</p>
+        <h2 id="final-title">Kamu berhasil sampai sini.</h2>
+        <p>Nah, karena kamu berhasil nyelesain ini, berarti kamu layak buka hadiah terakhir: satu voucher buatan sendiri yang bisa kamu klaim kapan pun.</p>
+        <div class="voucher">
+          <span>Voucher</span>
+          <strong>1x traktir makanan favorit + jalan santai tanpa buru-buru</strong>
+        </div>
+        <div class="action-row">
+          <button class="secondary-action nav-back" data-back-to="puzzle" type="button">Back</button>
+          <button class="primary-action" id="claim-button" type="button">Claim hadiah</button>
+        </div>
+        <p class="claim-message" id="claim-message" aria-live="polite"></p>
+      </div>
+    </section>
+  </main>
   <script src="script.js"></script>
 </body>
 

@@ -1,0 +1,7 @@
+{
+  "name": "taa-bday",
+  "private": true,
+  "scripts": {
+    "dev": "node dev-server.js"
+  }
+}
