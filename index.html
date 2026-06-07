@@ -14,7 +14,7 @@
 </head>
 
 <body>
-  <audio id="background-music" src="./music/backsound.mp3" loop preload="auto"></audio>
+  <audio id="background-music" src="./music/bgm.mp3" loop preload="none"></audio>
 
   <main class="app-shell">
     <section class="screen screen-opening is-active" id="opening" aria-labelledby="opening-title">
@@ -44,22 +44,10 @@
       </div>
     </section>
 
-    <section class="screen" id="timeline" aria-labelledby="timeline-title">
-      <div class="section-head">
-        <p class="eyebrow">Hal kecil yang aku inget</p>
-        <h2 id="timeline-title">Beberapa momen tentang kita.</h2>
-      </div>
-      <div class="memory-grid" id="memory-grid"></div>
-      <div class="action-row">
-        <button class="secondary-action nav-back" data-back-to="letter" type="button">Back</button>
-        <button class="primary-action" id="timeline-next" type="button">Ke teka-teki</button>
-      </div>
-    </section>
-
     <section class="screen" id="puzzle" aria-labelledby="puzzle-title">
       <div class="section-head">
-        <p class="eyebrow">Teka-teki kecil</p>
-        <h2 id="puzzle-title">Isi jawaban yang paling kita banget.</h2>
+        <p class="eyebrow">Teka-teki silang</p>
+        <h2 id="puzzle-title">Selamat mengerjakan sayangg</h2>
       </div>
       <div class="puzzle-layout">
         <div class="crossword-wrap">
@@ -78,7 +66,7 @@
         </aside>
       </div>
       <div class="action-row">
-        <button class="secondary-action nav-back" data-back-to="timeline" type="button">Back</button>
+        <button class="secondary-action nav-back" data-back-to="letter" type="button">Back</button>
         <button class="primary-action is-hidden" id="open-final" type="button">Buka hadiah terakhir</button>
       </div>
     </section>
@@ -86,11 +74,11 @@
     <section class="screen screen-final" id="final" aria-labelledby="final-title">
       <div class="final-panel">
         <p class="eyebrow">Hadiah terakhir</p>
-        <h2 id="final-title">Kamu berhasil sampai sini.</h2>
-        <p>Nah, karena kamu berhasil nyelesain ini, berarti kamu layak buka hadiah terakhir: satu voucher buatan sendiri yang bisa kamu klaim kapan pun.</p>
+        <h2 id="final-title">Kamu berhasil sampai sini yeyy.</h2>
+        <p>Nah, karena kamu berhasil nyelesaiin ini, berarti kamu layak buka hadiah terakhir: satu voucher yang bisa diklaim kapan aja.</p>
         <div class="voucher">
           <span>Voucher</span>
-          <strong>1x traktir makanan favorit + jalan santai tanpa buru-buru</strong>
+          <strong>1x traktir makanan + jalan-jalan ke tempat yang kamu mau + kue tart + hadiah lainnya</strong>
         </div>
         <div class="action-row">
           <button class="secondary-action nav-back" data-back-to="puzzle" type="button">Back</button>

@@ -5,63 +5,63 @@ const birthdayPage = {
     "I'm sad that we can't celebrate your birthday together :( but it's okay since kita masih bisa call-an tiap hari yayy :>",
     "Terakhir, semoga kamu suka dengan hadiah yang kubuat ini, masih ada beberapa kejutan lainnya yang aku selipkan di laman spesial ini. Happy Birthdayy"
   ],
-  memories: [
-    {
-      title: "Momen random yang masih aku inget",
-      text: "Ada hal kecil yang mungkin kamu lupa, tapi entah kenapa masih nyangkut di kepalaku sampai sekarang."
-    },
-    {
-      title: "Hal dari kamu yang bikin aku senyum",
-      text: "Cara kamu cerita, cara kamu bereaksi, dan cara kamu jadi lucu tanpa sadar. Itu selalu punya tempat sendiri."
-    },
-    {
-      title: "Hari yang rasanya sederhana",
-      text: "Bukan karena tempatnya spesial, tapi karena waktu itu ada kamu di sana. Kadang sesimpel itu."
-    }
-  ],
   puzzleWords: [
     {
       number: 1,
-      answer: "KAMU",
-      clue: "Orang yang jadi alasan halaman ini dibuat.",
-      row: 1,
-      col: 1,
-      direction: "across"
+      answer: "THALIA",
+      clue: "Siapa yang lagi ulang tahun",
+      row: 2,
+      col: 5,
+      direction: "down"
     },
     {
       number: 2,
-      answer: "KENANGAN",
-      clue: "Hal-hal kecil yang masih aku simpan tentang kita.",
-      row: 1,
-      col: 1,
+      answer: "PETITENGET",
+      clue: "Pantai yang \"Kita\" banget",
+      row: 3,
+      col: 3,
       direction: "down"
     },
     {
       number: 3,
-      answer: "RUMAH",
-      clue: "Rasa nyaman yang kadang muncul bukan karena tempat, tapi karena orangnya.",
-      row: 5,
-      col: 4,
+      answer: "LIVINGWORLD",
+      clue: "Mall favorit kita",
+      row: 6,
+      col: 2,
       direction: "across"
     },
     {
       number: 4,
-      answer: "MANIS",
-      clue: "Kata yang cocok buat momen kecil yang susah dijelasin.",
+      answer: "UGM",
+      clue: "Kampus Impian Kamu!!",
+      row: 5,
+      col: 7,
+      direction: "down"
+    },
+    {
+      number: 5,
+      answer: "FEBRUARI",
+      clue: "Di bulan apa kita jadian?",
       row: 3,
       col: 10,
       direction: "down"
     },
     {
-      number: 5,
-      answer: "MONOKROM",
-      clue: "Lagu yang sudah disiapkan jadi musik latar halaman ini.",
-      row: 9,
-      col: 2,
+      number: 6,
+      answer: "TARUH",
+      clue: "Judul lagu yang lagi keputer di background",
+      row: 12,
+      col: 3,
       direction: "across"
     }
   ]
 };
+
+const giftClaimConfig = {
+  phoneNumber: "6281933056054",
+  message: "Haii, aku mau claim voucher hadiah ulang tahunku yaa"
+};
+const CROSSWORD_STORAGE_KEY = "webbirthday-crossword-progress-v1";
 
 const screens = Array.from(document.querySelectorAll(".screen"));
 const music = document.getElementById("background-music");
@@ -73,7 +73,6 @@ const declineButton = document.getElementById("decline-button");
 const letterText = document.getElementById("letter-text");
 const letterProgress = document.getElementById("letter-progress");
 const nextLetterButton = document.getElementById("next-letter");
-const memoryGrid = document.getElementById("memory-grid");
 const crossword = document.getElementById("crossword");
 const acrossClues = document.getElementById("across-clues");
 const downClues = document.getElementById("down-clues");
@@ -85,7 +84,6 @@ let letterIndex = 0;
 let puzzleSolved = false;
 let openingDeclined = false;
 let activeDirection = "across";
-const gridSize = 11;
 const cellMap = new Map();
 
 requestAnimationFrame(() => {
@@ -101,6 +99,10 @@ function showScreen(id) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+function setPuzzleMessage(message) {
+  if (puzzleNote) puzzleNote.textContent = message;
+}
+
 function tryPlayMusic() {
   if (!music) return;
   music.volume = 0.34;
@@ -109,33 +111,104 @@ function tryPlayMusic() {
   });
 }
 
+function buildWhatsAppLink() {
+  const normalizedNumber = giftClaimConfig.phoneNumber.replace(/\D/g, "");
+  const encodedMessage = encodeURIComponent(giftClaimConfig.message);
+  return `https://wa.me/${normalizedNumber}?text=${encodedMessage}`;
+}
+
+function saveCrosswordProgress() {
+  if (!crossword) return;
+
+  try {
+    const progress = Array.from(crossword.querySelectorAll("input")).reduce((result, input) => {
+      const key = cellKey(Number(input.dataset.row), Number(input.dataset.col));
+      result[key] = input.value.toUpperCase();
+      return result;
+    }, {});
+
+    window.localStorage.setItem(CROSSWORD_STORAGE_KEY, JSON.stringify(progress));
+  } catch (error) {
+    console.error("Gagal menyimpan progress crossword:", error);
+  }
+}
+
+function loadCrosswordProgress() {
+  if (!crossword) return;
+
+  try {
+    const raw = window.localStorage.getItem(CROSSWORD_STORAGE_KEY);
+    if (!raw) return;
+
+    const progress = JSON.parse(raw);
+    if (!progress || typeof progress !== "object") return;
+
+    Array.from(crossword.querySelectorAll("input")).forEach((input) => {
+      const key = cellKey(Number(input.dataset.row), Number(input.dataset.col));
+      const savedValue = typeof progress[key] === "string" ? progress[key] : "";
+      input.value = savedValue.replace(/[^A-Z]/g, "").slice(0, 1);
+    });
+  } catch (error) {
+    console.error("Gagal memuat progress crossword:", error);
+  }
+}
+
 function renderLetter() {
   letterText.textContent = birthdayPage.letter[letterIndex];
   letterProgress.innerHTML = birthdayPage.letter
     .map((_, index) => `<span class="letter-dot${index === letterIndex ? " is-active" : ""}"></span>`)
     .join("");
-  nextLetterButton.textContent = letterIndex === birthdayPage.letter.length - 1 ? "Lihat kenangan" : "Lanjut";
-}
-
-function renderMemories() {
-  memoryGrid.innerHTML = birthdayPage.memories
-    .map((memory, index) => `
-      <article class="memory-card">
-        <span>${index + 1}</span>
-        <h3>${memory.title}</h3>
-        <p>${memory.text}</p>
-      </article>
-    `)
-    .join("");
+  nextLetterButton.textContent = letterIndex === birthdayPage.letter.length - 1 ? "Ke teka-teki" : "Lanjut";
 }
 
 function cellKey(row, col) {
   return `${row}-${col}`;
 }
 
+function normalizeAnswer(answer) {
+  return String(answer || "").trim().toUpperCase();
+}
+
+function validatePuzzleWords() {
+  const grid = new Map();
+
+  for (const word of birthdayPage.puzzleWords) {
+    const answer = normalizeAnswer(word.answer);
+    const directionValid = word.direction === "across" || word.direction === "down";
+
+    if (!directionValid) {
+      throw new Error(`Direction tidak valid untuk nomor ${word.number}.`);
+    }
+
+    if (!answer || /[^A-Z]/.test(answer)) {
+      throw new Error(`Jawaban nomor ${word.number} harus berupa huruf A-Z saja.`);
+    }
+
+    if (word.row < 1 || word.col < 1) {
+      throw new Error(`Posisi nomor ${word.number} harus dimulai dari row/col minimal 1.`);
+    }
+
+    [...answer].forEach((letter, index) => {
+      const row = word.direction === "down" ? word.row + index : word.row;
+      const col = word.direction === "across" ? word.col + index : word.col;
+      const key = cellKey(row, col);
+      const existing = grid.get(key);
+
+      if (existing && existing !== letter) {
+        throw new Error(`Jawaban nomor ${word.number} bentrok dengan huruf lain di ${key}.`);
+      }
+
+      grid.set(key, letter);
+    });
+  }
+}
+
 function buildCellMap() {
+  cellMap.clear();
   birthdayPage.puzzleWords.forEach((word) => {
-    [...word.answer].forEach((letter, index) => {
+    const answer = normalizeAnswer(word.answer);
+
+    [...answer].forEach((letter, index) => {
       const row = word.direction === "down" ? word.row + index : word.row;
       const col = word.direction === "across" ? word.col + index : word.col;
       const key = cellKey(row, col);
@@ -148,7 +221,18 @@ function buildCellMap() {
   });
 }
 
+function getGridSize() {
+  return birthdayPage.puzzleWords.reduce((max, word) => {
+    const answer = normalizeAnswer(word.answer);
+    const endRow = word.direction === "down" ? word.row + answer.length - 1 : word.row;
+    const endCol = word.direction === "across" ? word.col + answer.length - 1 : word.col;
+    return Math.max(max, endRow, endCol);
+  }, 0);
+}
+
 function renderClues() {
+  if (!acrossClues || !downClues) return;
+
   const renderList = (direction) => birthdayPage.puzzleWords
     .filter((word) => word.direction === direction)
     .map((word) => `<li value="${word.number}">${word.clue}</li>`)
@@ -159,33 +243,55 @@ function renderClues() {
 }
 
 function renderCrossword() {
-  buildCellMap();
-  const cells = [];
+  if (!crossword) return;
 
-  for (let row = 1; row <= gridSize; row += 1) {
-    for (let col = 1; col <= gridSize; col += 1) {
-      const cell = cellMap.get(cellKey(row, col));
+  try {
+    validatePuzzleWords();
+    buildCellMap();
+    const cells = [];
+    const gridSize = getGridSize();
 
-      if (!cell) {
-        cells.push('<div class="cell is-empty"></div>');
-        continue;
+    for (let row = 1; row <= gridSize; row += 1) {
+      for (let col = 1; col <= gridSize; col += 1) {
+        const cell = cellMap.get(cellKey(row, col));
+
+        if (!cell) {
+          cells.push('<div class="cell is-empty"></div>');
+          continue;
+        }
+
+        const number = cell.numbers.length ? `<span class="cell-number">${cell.numbers.join("/")}</span>` : "";
+        cells.push(`
+          <label class="cell">
+            ${number}
+            <input type="text" maxlength="1" autocomplete="off" inputmode="text" aria-label="Baris ${row}, kolom ${col}" data-answer="${cell.letter}" data-row="${row}" data-col="${col}">
+          </label>
+        `);
       }
-
-      const number = cell.numbers.length ? `<span class="cell-number">${cell.numbers.join("/")}</span>` : "";
-      cells.push(`
-        <label class="cell">
-          ${number}
-          <input type="text" maxlength="1" autocomplete="off" inputmode="text" aria-label="Baris ${row}, kolom ${col}" data-answer="${cell.letter}" data-row="${row}" data-col="${col}">
-        </label>
-      `);
     }
-  }
 
-  crossword.innerHTML = cells.join("");
-  renderClues();
+    crossword.innerHTML = cells.join("");
+    crossword.style.gridTemplateColumns = `repeat(${gridSize}, var(--crossword-cell-size))`;
+    crossword.style.gridTemplateRows = `repeat(${gridSize}, var(--crossword-cell-size))`;
+    if (openFinalButton) openFinalButton.classList.add("is-hidden");
+    puzzleSolved = false;
+    setPuzzleMessage("Isi semua kotak, lalu hadiah terakhir kebuka.");
+    renderClues();
+    loadCrosswordProgress();
+    checkPuzzle();
+  } catch (error) {
+    crossword.innerHTML = "";
+    crossword.style.gridTemplateColumns = "";
+    crossword.style.gridTemplateRows = "";
+    if (openFinalButton) openFinalButton.classList.add("is-hidden");
+    puzzleSolved = false;
+    setPuzzleMessage(error instanceof Error ? error.message : "Teka-teki silang belum bisa dimuat.");
+    console.error(error);
+  }
 }
 
 function getInputAt(row, col) {
+  if (!crossword) return null;
   return crossword.querySelector(`input[data-row="${row}"][data-col="${col}"]`);
 }
 
@@ -222,12 +328,31 @@ function syncDirectionFromInput(input) {
 }
 
 function moveToNextInput(currentInput) {
-  const nextInput = getNeighbor(currentInput, activeDirection, 1);
-  if (nextInput) nextInput.focus();
+  let nextInput = getNeighbor(currentInput, activeDirection, 1);
+
+  while (nextInput) {
+    const value = nextInput.value.trim().toUpperCase();
+    const expected = nextInput.dataset.answer;
+
+    if (!value) {
+      nextInput.focus();
+      return;
+    }
+
+    if (value !== expected) {
+      nextInput.focus();
+      return;
+    }
+
+    nextInput = getNeighbor(nextInput, activeDirection, 1);
+  }
 }
 
 function checkPuzzle() {
+  if (!crossword) return;
   const inputs = Array.from(crossword.querySelectorAll("input"));
+  const hasAnyWrong = inputs.some((input) => input.value.trim() && input.value.toUpperCase() !== input.dataset.answer);
+  const allFilled = inputs.every((input) => input.value.trim().length > 0);
   const allCorrect = inputs.every((input) => input.value.toUpperCase() === input.dataset.answer);
 
   inputs.forEach((input) => {
@@ -237,10 +362,24 @@ function checkPuzzle() {
     input.classList.toggle("is-wrong", hasValue && !isCorrect);
   });
 
+  if (!allFilled) {
+    setPuzzleMessage("Isi semua kotak dulu ya.");
+    if (openFinalButton) openFinalButton.classList.add("is-hidden");
+    puzzleSolved = false;
+    return;
+  }
+
+  if (hasAnyWrong) {
+    setPuzzleMessage("Masih ada jawaban yang belum pas. Coba cek lagi.");
+    if (openFinalButton) openFinalButton.classList.add("is-hidden");
+    puzzleSolved = false;
+    return;
+  }
+
   if (allCorrect && !puzzleSolved) {
     puzzleSolved = true;
-    puzzleNote.textContent = "Nah, karena kamu berhasil nyelesain ini, berarti kamu layak buka hadiah terakhir.";
-    openFinalButton.classList.remove("is-hidden");
+    setPuzzleMessage("Nah, karena kamu berhasil nyelesain ini, berarti kamu layak buka hadiah terakhir.");
+    if (openFinalButton) openFinalButton.classList.remove("is-hidden");
     burstConfetti();
   }
 }
@@ -299,7 +438,6 @@ acceptButton.addEventListener("click", () => {
 });
 
 declineButton.addEventListener("click", () => {
-  tryPlayMusic();
   setOpeningState(true);
 });
 
@@ -310,11 +448,6 @@ nextLetterButton.addEventListener("click", () => {
     return;
   }
 
-  renderMemories();
-  showScreen("timeline");
-});
-
-document.getElementById("timeline-next").addEventListener("click", () => {
   showScreen("puzzle");
 });
 
@@ -326,64 +459,70 @@ document.querySelectorAll(".nav-back").forEach((button) => {
   });
 });
 
-crossword.addEventListener("input", (event) => {
-  if (!event.target.matches("input")) return;
-  syncDirectionFromInput(event.target);
-  event.target.value = event.target.value.replace(/[^a-zA-Z]/g, "").slice(0, 1).toUpperCase();
-  if (event.target.value) moveToNextInput(event.target);
-  checkPuzzle();
-});
+if (crossword) {
+  crossword.addEventListener("input", (event) => {
+    if (!event.target.matches("input")) return;
+    syncDirectionFromInput(event.target);
+    event.target.value = event.target.value.replace(/[^a-zA-Z]/g, "").slice(0, 1).toUpperCase();
+    saveCrosswordProgress();
+    if (event.target.value) moveToNextInput(event.target);
+    checkPuzzle();
+  });
 
-crossword.addEventListener("keydown", (event) => {
-  if (!event.target.matches("input")) return;
+  crossword.addEventListener("keydown", (event) => {
+    if (!event.target.matches("input")) return;
 
-  if (event.key === "ArrowRight") {
-    activeDirection = "across";
+    if (event.key === "ArrowRight") {
+      activeDirection = "across";
+      event.preventDefault();
+      const nextInput = getNeighbor(event.target, "across", 1);
+      if (nextInput) nextInput.focus();
+      return;
+    }
+
+    if (event.key === "ArrowLeft") {
+      activeDirection = "across";
+      event.preventDefault();
+      const previousInput = getNeighbor(event.target, "across", -1);
+      if (previousInput) previousInput.focus();
+      return;
+    }
+
+    if (event.key === "ArrowDown") {
+      activeDirection = "down";
+      event.preventDefault();
+      const nextInput = getNeighbor(event.target, "down", 1);
+      if (nextInput) nextInput.focus();
+      return;
+    }
+
+    if (event.key === "ArrowUp") {
+      activeDirection = "down";
+      event.preventDefault();
+      const previousInput = getNeighbor(event.target, "down", -1);
+      if (previousInput) previousInput.focus();
+      return;
+    }
+
+    if (event.key !== "Backspace" || event.target.value) return;
     event.preventDefault();
-    const nextInput = getNeighbor(event.target, "across", 1);
-    if (nextInput) nextInput.focus();
-    return;
-  }
-
-  if (event.key === "ArrowLeft") {
-    activeDirection = "across";
-    event.preventDefault();
-    const previousInput = getNeighbor(event.target, "across", -1);
+    event.target.value = "";
+    saveCrosswordProgress();
+    checkPuzzle();
+    const previousInput = getNeighbor(event.target, activeDirection, -1);
     if (previousInput) previousInput.focus();
-    return;
-  }
+  });
 
-  if (event.key === "ArrowDown") {
-    activeDirection = "down";
-    event.preventDefault();
-    const nextInput = getNeighbor(event.target, "down", 1);
-    if (nextInput) nextInput.focus();
-    return;
-  }
+  crossword.addEventListener("focusin", (event) => {
+    if (!event.target.matches("input")) return;
+    syncDirectionFromInput(event.target);
+  });
 
-  if (event.key === "ArrowUp") {
-    activeDirection = "down";
-    event.preventDefault();
-    const previousInput = getNeighbor(event.target, "down", -1);
-    if (previousInput) previousInput.focus();
-    return;
-  }
-
-  if (event.key !== "Backspace" || event.target.value) return;
-  event.preventDefault();
-  const previousInput = getNeighbor(event.target, activeDirection, -1);
-  if (previousInput) previousInput.focus();
-});
-
-crossword.addEventListener("focusin", (event) => {
-  if (!event.target.matches("input")) return;
-  syncDirectionFromInput(event.target);
-});
-
-crossword.addEventListener("click", (event) => {
-  if (!event.target.matches("input")) return;
-  syncDirectionFromInput(event.target);
-});
+  crossword.addEventListener("click", (event) => {
+    if (!event.target.matches("input")) return;
+    syncDirectionFromInput(event.target);
+  });
+}
 
 openFinalButton.addEventListener("click", () => {
   showScreen("final");
@@ -392,6 +531,9 @@ openFinalButton.addEventListener("click", () => {
 document.getElementById("claim-button").addEventListener("click", () => {
   claimMessage.textContent = "Hadiah berhasil diklaim. Sekarang tinggal bilang mau makan apa dan kapan.";
   burstConfetti();
+  window.setTimeout(() => {
+    window.location.href = buildWhatsAppLink();
+  }, 400);
 });
 
 renderCrossword();
